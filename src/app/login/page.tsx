@@ -1,0 +1,115 @@
+"use client";
+
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import { useRouter } from 'next/navigation';
+
+interface FormData {
+  username: string;
+  password: string;
+}
+
+interface User {
+  username: string;
+}
+
+interface ClassroomData {
+  length: number;
+}
+
+export default function Login(): React.ReactElement {
+  const router = useRouter();
+
+  const [form, setForm] = useState<FormData>({
+    username: "",
+    password: "",
+  });
+  const [message, setMessage] = useState<string>("");
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+
+    const res = await fetch("http://localhost:8080/api/users/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    const text = await res.text();
+
+    if (res.ok) {
+      // Save username to local storage
+      localStorage.setItem("user", JSON.stringify({ username: form.username }));
+
+      // Get userId by making a request (you can change this if you return the ID directly from login)
+      const userRes = await fetch(`http://localhost:8080/api/users/username/${form.username}`);
+      if (!userRes.ok) {
+        setMessage("❌ Failed to fetch user data.");
+        return;
+      }
+      const user: string = await userRes.json();
+      const userId: string = user;
+      localStorage.setItem("userId", userId);
+      console.log(localStorage);
+
+      // Check if the user has any classrooms
+      const classRes = await fetch(`http://localhost:8080/api/user/${userId}/classrooms`);
+      console.log(classRes);
+      if (!classRes.ok) {
+        setMessage("❌ Failed to verify class enrollment.");
+        return;
+      }
+      const classData: ClassroomData = await classRes.json();
+
+      setMessage("✅ Login successful!");
+      setTimeout(() => {
+        if (classData.length === 0) {
+          router.push("/ChooseClasses");
+        } else {
+          router.push("/dashboard");
+        }
+      }, 1000);
+    } else {
+      setMessage(`❌ ${text}`);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-black text-white px-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-gray-900 p-6 rounded shadow-md w-full max-w-md"
+      >
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+
+        {(["username", "password"] as const).map((field) => (
+          <div key={field} className="mb-4">
+            <input
+              type={field === "password" ? "password" : "text"}
+              name={field}
+              value={form[field]}
+              onChange={handleChange}
+              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+              className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:border-white"
+              required
+            />
+          </div>
+        ))}
+
+        <button
+          type="submit"
+          className="w-full bg-white text-black py-2 rounded font-semibold hover:bg-gray-200"
+        >
+          Log In
+        </button>
+
+        {message && (
+          <p className="mt-4 text-sm text-center text-red-400">{message}</p>
+        )}
+      </form>
+    </div>
+  );
+}
