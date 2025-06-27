@@ -1,4 +1,4 @@
-# Stevens Sync Frontend
+# ClassChat Frontend
 
 A collaborative classroom chat application built with Next.js and React.
 
