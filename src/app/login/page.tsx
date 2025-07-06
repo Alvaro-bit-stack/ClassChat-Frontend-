@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import LoginPhoto from "../../../public/loginphoto.jpg";
 
 interface FormData {
   username: string;
@@ -45,7 +47,9 @@ export default function Login(): React.ReactElement {
       localStorage.setItem("user", JSON.stringify({ username: form.username }));
 
       // Get userId by making a request (you can change this if you return the ID directly from login)
-      const userRes = await fetch(`http://localhost:8080/api/users/username/${form.username}`);
+      const userRes = await fetch(
+        `http://localhost:8080/api/users/username/${form.username}`
+      );
       if (!userRes.ok) {
         setMessage("❌ Failed to fetch user data.");
         return;
@@ -56,7 +60,9 @@ export default function Login(): React.ReactElement {
       console.log(localStorage);
 
       // Check if the user has any classrooms
-      const classRes = await fetch(`http://localhost:8080/api/user/${userId}/classrooms`);
+      const classRes = await fetch(
+        `http://localhost:8080/api/user/${userId}/classrooms`
+      );
       console.log(classRes);
       if (!classRes.ok) {
         setMessage("❌ Failed to verify class enrollment.");
@@ -78,38 +84,53 @@ export default function Login(): React.ReactElement {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-gray-900 p-6 rounded shadow-md w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-
-        {(["username", "password"] as const).map((field) => (
-          <div key={field} className="mb-4">
-            <input
-              type={field === "password" ? "password" : "text"}
-              name={field}
-              value={form[field]}
-              onChange={handleChange}
-              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-              className="w-full px-4 py-2 rounded bg-gray-800 text-white border border-gray-600 focus:outline-none focus:border-white"
-              required
-            />
-          </div>
-        ))}
-
-        <button
-          type="submit"
-          className="w-full bg-white text-black py-2 rounded font-semibold hover:bg-gray-200"
+    <>
+      <div className="min-h-screen flex items-center backdrop-blur-md bg-white text-gray-800 px-4">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-gray-100 p-5 rounded shadow-md w-[40%] h-[100vh] flex flex-col justify-center "
         >
-          Log In
-        </button>
+          <div className="flex items-center mb-[50px] justify-center">
+            <h1 className="text-4xl font-bold">Welcome Back</h1>
+          </div>
 
-        {message && (
-          <p className="mt-4 text-sm text-center text-red-400">{message}</p>
-        )}
-      </form>
-    </div>
+          <h2 className="text-2xl font-lightweight mb-6 text-center">Login</h2>
+
+          {(["username", "password"] as const).map((field) => (
+            <div key={field} className="mb-4">
+              <input
+                type={field === "password" ? "password" : "text"}
+                name={field}
+                value={form[field]}
+                onChange={handleChange}
+                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                className="w-full px-4 py-2 rounded bg-white text-black border border-gray-600 focus:outline-none focus:border-blue-400"
+                required
+              />
+            </div>
+          ))}
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded font-semibold hover:bg-blue-800"
+          >
+            Log In
+          </button>
+
+          {message && (
+            <p className="mt-4 text-sm text-center text-red-400">{message}</p>
+          )}
+        </form>
+        <div className="w-[60%] h-[100vh] relative  ">
+          <Image
+            src={LoginPhoto}
+            alt="Login Photo"
+            className="object-cover p-5"
+            fill
+            priority
+          ></Image>
+        </div>
+      </div>
+    </>
   );
 }
