@@ -12,6 +12,7 @@ interface ClassData {
   courseCode: string;
   courseName: string;
   semester: string;
+  imageUrl: string;
 }
 
 export default function Dashboard(): React.ReactElement {
@@ -38,47 +39,54 @@ export default function Dashboard(): React.ReactElement {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white p-6">
+    <div className="min-h-screen flex flex-col bg-white text-gray-800 p-7">
       {user ? (
         <>
-          <h1 className="text-3xl font-bold mb-4">
-            Welcome, {user.username} 🎉
+          <h1 className="text-5xl font-bold mb-4 w-100%">
+            {user.username}'s Dashboard
+            <hr
+              style={{
+                background: "blue",
+                color: "blue",
+                borderColor: "blue",
+                height: "2px",
+                width: "100%",
+              }}
+            />
           </h1>
 
           <h2 className="text-xl font-semibold mb-2">Your Classes:</h2>
           {classes.length === 0 ? (
             <p>You are not enrolled in any classes.</p>
           ) : (
-            <ul className="mb-6 space-y-2 w-full max-w-xl">
+            <ul className="w-full flex flex-row gap-4 overflow-x-auto pb-4">
               {classes.map((cls) => (
-                <li
-                  key={cls.id}
-                  className="bg-gray-800 px-4 py-2 rounded shadow flex justify-between items-center"
-                >
-                  <div>
-                    {cls.courseCode} - {cls.courseName} ({cls.semester})
-                  </div>
-                  <button
-                    onClick={() => router.push(`/chatroom?classId=${cls.id}`)}
-                    className="ml-4 bg-white text-black px-3 py-1 rounded hover:bg-gray-300"
+                <>
+                  <li
+                    key={cls.id}
+                    className="bg-gray-800 px-4 py-2 rounded shadow flex flex-col min-w-[300px]"
                   >
-                    Chat
-                  </button>
-                </li>
+                    <div className="text-2xl font-medium text-white">
+                      {cls.courseCode} - {cls.courseName} ({cls.semester})
+                    </div>
+                    <div className="pt-4">
+                      <img
+                        src={cls.imageUrl}
+                        alt={`${cls.courseCode} banner`}
+                        className="w-2xl h-[300px] object-cover rounded"
+                      />
+                    </div>
+                    <button
+                      onClick={() => router.push(`/chatroom?classId=${cls.id}`)}
+                      className="ml-4 bg-white text-black px-3 py-1 rounded hover:bg-gray-300 mt-10"
+                    >
+                      Chat
+                    </button>
+                  </li>
+                </>
               ))}
             </ul>
           )}
-
-          <button
-            onClick={() => {
-              localStorage.removeItem("user");
-              localStorage.removeItem("userId");
-              router.push("/login");
-            }}
-            className="px-4 py-2 bg-white text-black rounded hover:bg-gray-300"
-          >
-            Logout
-          </button>
         </>
       ) : (
         <p>Loading...</p>

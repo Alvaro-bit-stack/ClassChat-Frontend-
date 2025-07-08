@@ -51,17 +51,29 @@ export default function ChooseClasses(): React.ReactElement {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-6">
-      <h1 className="text-2xl font-bold mb-4">Choose Your Classes</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="min-h-screen bg-white text-gray-800 p-6">
+      <h1 className="text-4xl font-bold mb-4">Choose Your Classes</h1>
+      <hr
+        style={{
+          background: "blue",
+          color: "blue",
+          borderColor: "blue",
+          height: "2px",
+          width: "100%",
+        }}
+      />
+      <form onSubmit={handleSubmit} className="space-y-4 mt-3">
         {classes.map((cls) => (
-          <div key={cls.id} className="flex items-center">
+          <div
+            key={cls.id}
+            className="flex flex-col-reverse bg-gray-800 text-white text-2xl border-2 border-black rounded-md"
+          >
             <input
               type="checkbox"
               id={`class-${cls.id}`}
               checked={selectedIds.includes(cls.id)}
               onChange={() => toggleSelection(cls.id)}
-              className="mr-2"
+              className="mr-2 mt-40 checkbox"
             />
             <label htmlFor={`class-${cls.id}`}>
               {cls.courseCode} - {cls.courseName} ({cls.semester})
@@ -71,7 +83,7 @@ export default function ChooseClasses(): React.ReactElement {
 
         <button
           type="submit"
-          className="mt-4 bg-white text-black px-4 py-2 rounded hover:bg-gray-300"
+          className="mt-4 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600"
         >
           Submit Classes
         </button>
