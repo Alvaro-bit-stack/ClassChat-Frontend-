@@ -5,8 +5,10 @@ import Image from "next/image";
 import SideBar from "./SideBar";
 export default function DashNav({
   hiddenCourseBt = false,
+  hiddenDashBoardBt = false,
 }: {
   hiddenCourseBt?: boolean;
+  hiddenDashBoardBt?: boolean;
 }) {
   const router = useRouter();
   return (
@@ -22,6 +24,13 @@ export default function DashNav({
         </div>
         <div className="flex-none">
           <ul className="menu menu-horizontal px-1">
+            {!hiddenDashBoardBt && (
+              <li className="justify-center">
+                <a href="/dashboard" className="btn btn-primary">
+                  Dashboard
+                </a>
+              </li>
+            )}
             {!hiddenCourseBt && (
               <li>
                 <SideBar></SideBar>

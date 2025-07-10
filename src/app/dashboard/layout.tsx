@@ -12,7 +12,7 @@ export const metadata = {
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <>
-      <DashNav />
+      <DashNav hiddenDashBoardBt />
       <main className="flex-grow">{children}</main>
     </>
   );
