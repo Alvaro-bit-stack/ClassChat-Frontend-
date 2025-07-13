@@ -19,6 +19,7 @@ interface ClassroomData {
 }
 
 export default function Login(): React.ReactElement {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
 
   const [form, setForm] = useState<FormData>({
@@ -34,7 +35,7 @@ export default function Login(): React.ReactElement {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:8080/api/users/login", {
+    const res = await fetch(`${apiUrl}/api/users/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
@@ -48,7 +49,7 @@ export default function Login(): React.ReactElement {
 
       // Get userId by making a request (you can change this if you return the ID directly from login)
       const userRes = await fetch(
-        `http://localhost:8080/api/users/username/${form.username}`
+        `${apiUrl}/api/users/username/${form.username}`
       );
       if (!userRes.ok) {
         setMessage("❌ Failed to fetch user data.");
@@ -60,9 +61,7 @@ export default function Login(): React.ReactElement {
       console.log(localStorage);
 
       // Check if the user has any classrooms
-      const classRes = await fetch(
-        `http://localhost:8080/api/user/${userId}/classrooms`
-      );
+      const classRes = await fetch(`${apiUrl}/api/user/${userId}/classrooms`);
       console.log(classRes);
       if (!classRes.ok) {
         setMessage("❌ Failed to verify class enrollment.");

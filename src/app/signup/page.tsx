@@ -12,6 +12,7 @@ interface FormData {
 }
 
 export default function SignUp(): React.ReactElement {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -64,7 +65,7 @@ export default function SignUp(): React.ReactElement {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/api/users", {
+      const res = await fetch(`${apiUrl}/api/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json; charset=utf-8" },
         body: JSON.stringify({

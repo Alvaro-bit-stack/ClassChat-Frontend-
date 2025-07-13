@@ -11,6 +11,7 @@ interface Files {
 }
 
 export default function Files() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const searchParams = useSearchParams();
   const [classroomId, setClassroomId] = useState<string | null>(null);
   const [files, setFiles] = useState<Files[]>([]);
@@ -26,7 +27,7 @@ export default function Files() {
   useEffect(() => {
     if (!classroomId) return; // don't fetch if no classroomId yet
 
-    fetch(`http://localhost:8080/api/classroom/${classroomId}/files`)
+    fetch(`${apiUrl}/api/classroom/${classroomId}/files`)
       .then((res) => res.json())
       .then((files: Files[]) => setFiles(files))
       .catch((err) => console.error("Failed to fetch files", err));

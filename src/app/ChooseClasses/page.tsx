@@ -11,6 +11,7 @@ interface ClassData {
 }
 
 export default function ChooseClasses(): React.ReactElement {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
   const [classes, setClasses] = useState<ClassData[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -26,7 +27,7 @@ export default function ChooseClasses(): React.ReactElement {
     }
 
     // Fetch all available classes
-    fetch("http://localhost:8080/api/classrooms")
+    fetch(`${apiUrl}/api/classrooms`)
       .then((res) => res.json())
       .then((data: ClassData[]) => setClasses(data))
       .catch((err) => console.error("Failed to load classes", err));
@@ -41,7 +42,7 @@ export default function ChooseClasses(): React.ReactElement {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     for (let classId of selectedIds) {
-      await fetch(`http://localhost:8080/api/user/${userId}/classrooms`, {
+      await fetch(`${apiUrl}/api/user/${userId}/classrooms`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: classId }),

@@ -20,6 +20,7 @@ interface User {
 }
 
 export default function Chatroom(): React.ReactElement {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
   const searchParams = useSearchParams();
   const [userId, setUserId] = useState<string | null>(null);
@@ -61,13 +62,10 @@ export default function Chatroom(): React.ReactElement {
       alert("Please select a file before submitting");
       return;
     }
-    fetch(
-      `http://localhost:8080/api/user/${userId}/classroom/${classroomId}/files`,
-      {
-        method: "POST",
-        body: formPayload,
-      }
-    )
+    fetch(`${apiUrl}/api/user/${userId}/classroom/${classroomId}/files`, {
+      method: "POST",
+      body: formPayload,
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Upload failed");
@@ -104,7 +102,7 @@ export default function Chatroom(): React.ReactElement {
     setUserId(storedUserId);
     setClassroomId(urlClassroomId);
 
-    fetch(`http://localhost:8080/api/classroom/${urlClassroomId}/messages`)
+    fetch(`${apiUrl}/api/classroom/${urlClassroomId}/messages`)
       .then((res) => res.json())
       .then((data: Message[]) => setMessages(data))
       .catch((err) => console.error("Failed to fetch messages", err));
@@ -114,7 +112,7 @@ export default function Chatroom(): React.ReactElement {
     if (!newMessage.trim() || !userId || !classroomId) return;
 
     const res = await fetch(
-      `http://localhost:8080/api/user/${userId}/classrooms/${classroomId}/messages`,
+      `${apiUrl}/api/user/${userId}/classrooms/${classroomId}/messages`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

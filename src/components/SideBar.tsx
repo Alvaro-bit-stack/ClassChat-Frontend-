@@ -13,6 +13,7 @@ interface ClassData {
 }
 
 export default function SideBar() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [classes, setClasses] = useState<ClassData[]>([]);
@@ -26,7 +27,7 @@ export default function SideBar() {
       setUser(parsedUser);
 
       // Fetch enrolled classes
-      fetch(`http://localhost:8080/api/user/${storedUserId}/classrooms`)
+      fetch(`${apiUrl}/api/user/${storedUserId}/classrooms`)
         .then((res) => res.json())
         .then((data: ClassData[]) => setClasses(data))
         .catch((err) => console.error("Failed to load classes", err));
