@@ -9,7 +9,7 @@ interface Files {
   category: string;
 }
 
-export default function Files() {
+export default function FilesClient() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const searchParams = useSearchParams();
   const [classroomId, setClassroomId] = useState<string | null>(null);
